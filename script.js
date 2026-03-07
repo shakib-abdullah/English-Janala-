@@ -2,52 +2,28 @@
 
 
 
+// display a placeholder message when no lesson is selected
+const showDefaultMessage = () => {
+    const wordcontainer = document.getElementById("word-container");
+    wordcontainer.className = "bg-gray-200 w-11/12 mx-auto my-[30px] py-[20px] flex justify-center items-center min-h-[200px]";
+    wordcontainer.innerHTML = `
+        <div class="text-center">
+            <p class="font-semibold text-lg">Please select a lesson above to view vocabulary.</p>
+        </div>
+    `;
+}
+
 const loadlesson = () => {
     const url = "https://openapi.programming-hero.com/api/levels/all";
         fetch(url)
             .then(res => res.json())
             .then(x => {
                 displaylesson(x.data);
+                // if you want the first level to load automatically, uncomment:
+                // if (x.data.length > 0) loadlevelword(x.data[0].level_no);
             });
 }
 
-const loadlevelword = (id) =>{
-    //console.log(id);
-    const url = `https://openapi.programming-hero.com/api/level/${id}`;
-    //console.log(url);
-    fetch(url)
-     .then(res=>res.json())
-     .then(data=>displaylevelword(data.data));
-}
-
-const displaylevelword=(words)=>{
-    //console.log(words);
-    const wordcontainer = document.getElementById("word-container");
-    wordcontainer.innerHTML = "";
-
-    words.forEach(word =>{
-        console.log(word);
-
-        const card = document.createElement("div");
-        card.innerHTML = `
-            <div class="bg-white m-[20px]   py-[30px] shadow-sm py-[10px] px-[5px] space-y-4 text-center rounded-lg">
-            <h2 class=" font-bold text-2xl">${word.word}</h2>
-            <p>Meaning /Pronounciation</p>
-            <div class="font-semibold">"${word.meaning} / ${word.pronunciation}"</div>
-            <div class="flex justify-between text-center mx-[30px] ">
-                <button  class="bg-[#1A91FF30] hover:bg-[#1A91FF90] h-[30px] w-[30px] rounded-sm"><i class="fa-solid fa-circle-info"></i></button>
-                <button  class="bg-[#1A91FF30]  hover:bg-[#1A91FF90] h-[30px] w-[30px] rounded-sm"><i class="fa-solid fa-volume-high"></i></button>
-
-            </div>
-        </div>
-        `;
-
-        wordcontainer.appendChild(card); 
-
-    })
-
-
-}
 
 
  const displaylesson = (lessons) => {
@@ -69,4 +45,57 @@ const displaylevelword=(words)=>{
 }
 
 
+
+
+const loadlevelword = (id) =>{
+    //console.log(id);
+    const url = `https://openapi.programming-hero.com/api/level/${id}`;
+    //console.log(url);
+    fetch(url)
+     .then(res=>res.json())
+     .then(data=>displaylevelword(data.data));
+}
+
+const displaylevelword=(words)=>{
+    //console.log(words);
+    const wordcontainer = document.getElementById("word-container");
+    wordcontainer.className = "bg-gray-200 w-11/12 grid grid-cols-1 sm:grid-cols-3 gap-[5px] mx-auto my-[30px] py-[20px]";
+    wordcontainer.innerHTML = "";
+
+    if (words.length === 0) {
+        wordcontainer.className = "bg-gray-200 w-11/12 mx-auto my-[30px] py-[20px] flex justify-center items-center min-h-[200px]";
+        wordcontainer.innerHTML = `
+            <div class="text-center">
+                <p class="font-semibold text-lg">Data not added yet. Click next lesson.</p>
+            </div>
+        `;
+        return;   // else er kaj korbe bola jai ,  mane function theke ber kore dibe eta true hole 
+    }
+
+    words.forEach(word =>{
+        //console.log(word);
+
+        const card = document.createElement("div");
+        card.innerHTML = `
+            <div class="bg-white m-[20px]   py-[30px] shadow-sm py-[10px] px-[5px] space-y-4 text-center rounded-lg">
+                <h2 class=" font-bold text-2xl">${word.word}</h2>
+                <p>Meaning /Pronounciation</p>
+                <div class="font-semibold">"${word.meaning} / ${word.pronunciation}"</div>
+                <div class="flex justify-between text-center mx-[30px] ">
+                    <button  class="bg-[#1A91FF30] hover:bg-[#1A91FF90] h-[30px] w-[30px] rounded-sm"><i class="fa-solid fa-circle-info"></i></button>
+                    <button  class="bg-[#1A91FF30]  hover:bg-[#1A91FF90] h-[30px] w-[30px] rounded-sm"><i class="fa-solid fa-volume-high"></i></button>
+
+                </div>
+            </div>
+        `;
+
+        wordcontainer.appendChild(card); 
+
+    })
+
+
+}
+
+
+showDefaultMessage();
 loadlesson();   
